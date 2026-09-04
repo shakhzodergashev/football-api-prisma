@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Param, Get } from '@nestjs/common';
 import { TournamentsService } from './tournaments.service.js';
 
-@Controller('tournaments')
+@Controller('football-tournaments')
 export class TournamentsController {
     constructor(private tournamentsService: TournamentsService) { }
 
