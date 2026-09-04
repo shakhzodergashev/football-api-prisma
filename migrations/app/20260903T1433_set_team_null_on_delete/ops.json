@@ -1,0 +1,86 @@
+[
+  {
+    "id": "dropConstraint.player.player_teamId_fkey",
+    "label": "Drop constraint \"player_teamId_fkey\" on \"player\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "player_teamId_fkey",
+        "table": "player"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"player_teamId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "player_teamId_fkey",
+          "public",
+          "\"public\".\"player\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop constraint \"player_teamId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"player\" DROP CONSTRAINT \"player_teamId_fkey\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"player_teamId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "player_teamId_fkey",
+          "public",
+          "\"public\".\"player\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.player.player_teamId_fkey",
+    "label": "Add foreign key \"player_teamId_fkey\" on \"player\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "player_teamId_fkey",
+        "table": "player"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"player_teamId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "player_teamId_fkey",
+          "public",
+          "\"public\".\"player\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"player_teamId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"player\"\nADD CONSTRAINT \"player_teamId_fkey\"\nFOREIGN KEY (\"teamId\")\nREFERENCES \"public\".\"team\" (\"id\")\nON DELETE SET NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"player_teamId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "player_teamId_fkey",
+          "public",
+          "\"public\".\"player\""
+        ]
+      }
+    ]
+  }
+]

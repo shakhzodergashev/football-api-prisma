@@ -1,0 +1,404 @@
+[
+  {
+    "id": "table.playerTournament",
+    "label": "Create table \"playerTournament\"",
+    "summary": "Creates table \"playerTournament\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "playerTournament"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"playerTournament\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"playerTournament\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"playerTournament\"",
+        "sql": "CREATE TABLE \"public\".\"playerTournament\" (\n  \"playerId\" int4 NOT NULL,\n  \"tournamentId\" int4 NOT NULL,\n  PRIMARY KEY (\"playerId\", \"tournamentId\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"playerTournament\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"playerTournament\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.team",
+    "label": "Create table \"team\"",
+    "summary": "Creates table \"team\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "team"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"team\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"team\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"team\"",
+        "sql": "CREATE TABLE \"public\".\"team\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"team\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"team\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.tournament",
+    "label": "Create table \"tournament\"",
+    "summary": "Creates table \"tournament\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "tournament"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"tournament\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"tournament\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"tournament\"",
+        "sql": "CREATE TABLE \"public\".\"tournament\" (\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"tournament\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"tournament\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.player.teamId",
+    "label": "Add column \"teamId\" to \"player\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "teamId",
+        "table": "player"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"teamId\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "player",
+          "teamId"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"teamId\"",
+        "sql": "ALTER TABLE \"public\".\"player\" ADD COLUMN \"teamId\" int4"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"teamId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "player",
+          "teamId"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.player.player_teamId_idx_f2b72ab3",
+    "label": "Create index \"player_teamId_idx_f2b72ab3\" on \"player\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "player_teamId_idx_f2b72ab3",
+        "table": "player"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"player_teamId_idx_f2b72ab3\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"player_teamId_idx_f2b72ab3\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"player_teamId_idx_f2b72ab3\"",
+        "sql": "CREATE INDEX \"player_teamId_idx_f2b72ab3\" ON \"public\".\"player\" (\"teamId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"player_teamId_idx_f2b72ab3\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"player_teamId_idx_f2b72ab3\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.playerTournament.playerTournament_playerId_idx_710cf1aa",
+    "label": "Create index \"playerTournament_playerId_idx_710cf1aa\" on \"playerTournament\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "playerTournament_playerId_idx_710cf1aa",
+        "table": "playerTournament"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"playerTournament_playerId_idx_710cf1aa\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"playerTournament_playerId_idx_710cf1aa\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"playerTournament_playerId_idx_710cf1aa\"",
+        "sql": "CREATE INDEX \"playerTournament_playerId_idx_710cf1aa\" ON \"public\".\"playerTournament\" (\"playerId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"playerTournament_playerId_idx_710cf1aa\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"playerTournament_playerId_idx_710cf1aa\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.playerTournament.playerTournament_tournamentId_idx_d0bd97a6",
+    "label": "Create index \"playerTournament_tournamentId_idx_d0bd97a6\" on \"playerTournament\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "playerTournament_tournamentId_idx_d0bd97a6",
+        "table": "playerTournament"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"playerTournament_tournamentId_idx_d0bd97a6\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"playerTournament_tournamentId_idx_d0bd97a6\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"playerTournament_tournamentId_idx_d0bd97a6\"",
+        "sql": "CREATE INDEX \"playerTournament_tournamentId_idx_d0bd97a6\" ON \"public\".\"playerTournament\" (\"tournamentId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"playerTournament_tournamentId_idx_d0bd97a6\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"playerTournament_tournamentId_idx_d0bd97a6\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.playerTournament.playerTournament_playerId_fkey",
+    "label": "Add foreign key \"playerTournament_playerId_fkey\" on \"playerTournament\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "playerTournament_playerId_fkey",
+        "table": "playerTournament"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"playerTournament_playerId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "playerTournament_playerId_fkey",
+          "public",
+          "\"public\".\"playerTournament\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"playerTournament_playerId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"playerTournament\"\nADD CONSTRAINT \"playerTournament_playerId_fkey\"\nFOREIGN KEY (\"playerId\")\nREFERENCES \"public\".\"player\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"playerTournament_playerId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "playerTournament_playerId_fkey",
+          "public",
+          "\"public\".\"playerTournament\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.playerTournament.playerTournament_tournamentId_fkey",
+    "label": "Add foreign key \"playerTournament_tournamentId_fkey\" on \"playerTournament\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "playerTournament_tournamentId_fkey",
+        "table": "playerTournament"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"playerTournament_tournamentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "playerTournament_tournamentId_fkey",
+          "public",
+          "\"public\".\"playerTournament\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"playerTournament_tournamentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"playerTournament\"\nADD CONSTRAINT \"playerTournament_tournamentId_fkey\"\nFOREIGN KEY (\"tournamentId\")\nREFERENCES \"public\".\"tournament\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"playerTournament_tournamentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "playerTournament_tournamentId_fkey",
+          "public",
+          "\"public\".\"playerTournament\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.player.player_teamId_fkey",
+    "label": "Add foreign key \"player_teamId_fkey\" on \"player\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "player_teamId_fkey",
+        "table": "player"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"player_teamId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "player_teamId_fkey",
+          "public",
+          "\"public\".\"player\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"player_teamId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"player\"\nADD CONSTRAINT \"player_teamId_fkey\"\nFOREIGN KEY (\"teamId\")\nREFERENCES \"public\".\"team\" (\"id\")\nON DELETE SET NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"player_teamId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "player_teamId_fkey",
+          "public",
+          "\"public\".\"player\""
+        ]
+      }
+    ]
+  }
+]

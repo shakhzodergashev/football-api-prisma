@@ -1,0 +1,44 @@
+model Player {
+  id        Int      @id @default(autoincrement())
+  name      String
+  surname   String
+
+  teamId    Int?
+  team      Team? @relation(
+    fields: [teamId],
+    references: [id],
+    onDelete: SetNull
+  )
+
+  tournaments PlayerTournament[]
+
+  createdAt TimestamptzString @default(now())
+  updatedAt temporal.updatedAtString()
+}
+
+model Team {
+  id        Int      @id @default(autoincrement())
+  name      String
+
+  players   Player[]
+
+  createdAt TimestamptzString @default(now())
+  updatedAt temporal.updatedAtString()
+}
+
+model Tournament {
+  id          Int               @id @default(autoincrement())
+  name        String
+
+  players     PlayerTournament[]
+}
+
+model PlayerTournament {
+  playerId     Int
+  tournamentId Int
+
+  player       Player     @relation(fields: [playerId], references: [id])
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+
+  @@id([playerId, tournamentId])
+}
